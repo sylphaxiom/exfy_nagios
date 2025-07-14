@@ -1,0 +1,4 @@
+# server list for nagios plugin. One server per line in format: <alias>:<hostname>[/<ip>]
+# any lines beginning with '#' will be ignored as comments
+exfy_1:Sylphaxiom1.remotechallenge/172.30.0.133
+exfy_1:Sylphaxiom2.remotechallenge/172.30.0.159
