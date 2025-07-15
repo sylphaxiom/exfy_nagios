@@ -18,9 +18,9 @@
 
 import pdb; pdb.set_trace()
 from pprint import pprint
-import sys
 import logging
 import argparse
+#import requests
 
 log = logging.getLogger(__name__)
 logging.basicConfig(filename='check_http_local.log', encoding='utf-8', level=logging.DEBUG)
@@ -39,13 +39,13 @@ parser = argparse.ArgumentParser(
     add_help=False, # omitted due to no human useage
     allow_abbrev=True 
 )
-parser.add_argument('path')
+parser.add_argument('-path', required=False, type=str)
 parser.add_argument('-log', required=False, type=int, choices=[0,1,2,3,4,5])
 args = parser.parse_args()
 log.debug('Raw arguments: %s', args)
 logLevel = args.log
 log.info('Log level set as: %s', logLevel)
-srvPath = "servers.txt" if (args.path =='./') else  args.path + "servers.txt"
+srvPath = "servers.txt" if (args.path == ('./' | '')) else  args.path + "servers.txt"
 log.info('srvPath set as: %s', srvPath)
 servers = []
 
@@ -107,6 +107,29 @@ def getServers(srvPath):
         servers.append(serv.copy())
     log.info('Parsed servers: %s', servers)
     return servers
+
+def sendHttp(servers):
+    numServ = len(servers)
+    log.info('%s servers parsed from server file. Proceeding with HTTP requests...', numServ)
+    servResp = servers.copy()
+    log.debug('servResp starting contents: %s', servResp)
+    # for serv in servResp:
+    #     current = serv.key()
+    #     for key, value in serv:
+    #         if key == 'ip':
+    #             rq = requests.get('https://34.219.204.95')
+    #             log.debug('request text: %s', rq)
+    #             try:
+    #                 rq.raise_for_status()
+    #             except requests.exceptions.HTTPError as e:
+    #                 log.error('HTTP error occurred: %s', e)
+    #                 return 1
+    #             except requests.exceptions.RequestException as e:
+    #                 log.error('A request error occurred: %s', e)
+    #                 return 1
+    #             log.info('Request is successful with code: %s', rq.status_code)
+    #             return rq.status_code
+
 
 # Call the first function to pull the servers.
 servers = getServers(srvPath) 
