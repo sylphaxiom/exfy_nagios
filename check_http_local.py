@@ -48,7 +48,7 @@ log.info('Log level set as: %s', logLevel)
 srvPath = "servers.txt" if (args.path =='./') else  args.path + "servers.txt"
 log.info('srvPath set as: %s', srvPath)
 servers = {}
-breakpoint()
+
 # If a log level is passed to the program, update level
 match logLevel:
     case 0:
@@ -77,7 +77,6 @@ def getServers(srvPath):
     log.info('Beginning aquisition of server list...')
     rows = []
     serv={}
-    breakpoint()
     with open(srvPath, "r") as file:
         for line in file:
             line = line.strip('\n') # Sanitize the line of breaks
