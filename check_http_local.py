@@ -17,7 +17,7 @@
 """
 
 import pdb; pdb.set_trace()
-
+from pprint import pprint
 import sys
 import logging
 import argparse
@@ -47,7 +47,7 @@ logLevel = args.log
 log.info('Log level set as: %s', logLevel)
 srvPath = "servers.txt" if (args.path =='./') else  args.path + "servers.txt"
 log.info('srvPath set as: %s', srvPath)
-servers = {}
+servers = []
 
 # If a log level is passed to the program, update level
 match logLevel:
@@ -76,7 +76,7 @@ match logLevel:
 def getServers(srvPath):
     log.info('Beginning aquisition of server list...')
     rows = []
-    serv={}
+    n = 0
     with open(srvPath, "r") as file:
         for line in file:
             line = line.strip('\n') # Sanitize the line of breaks
@@ -87,6 +87,9 @@ def getServers(srvPath):
             rows.append(line)
         log.info('File operations completed, parsing servers...')
     for row in rows:
+        serv = {}
+        n = n+1
+        sKey = "server"+str(n)
         cutter = row.split(':', maxsplit=1)
         log.debug('First split to alias: %s | server: %s', cutter[0], cutter[1])
         if '/' in cutter[1]:
@@ -101,10 +104,10 @@ def getServers(srvPath):
             'host':cutter[1]
             })
         log.debug('Final server object: %s', serv)
-        servers.update({'server': serv})
+        servers.append(serv.copy())
     log.info('Parsed servers: %s', servers)
     return servers
 
 # Call the first function to pull the servers.
-
 servers = getServers(srvPath) 
+log.debug(pprint(vars()))
