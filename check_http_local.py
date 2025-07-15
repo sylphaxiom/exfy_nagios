@@ -20,7 +20,7 @@ import pdb; pdb.set_trace()
 from pprint import pprint
 import logging
 import argparse
-#import requests
+import requests
 
 log = logging.getLogger(__name__)
 logging.basicConfig(filename='check_http_local.log', encoding='utf-8', level=logging.DEBUG)
@@ -89,48 +89,65 @@ def getServers(srvPath):
     for row in rows:
         serv = {}
         n = n+1
-        sKey = "server"+str(n)
         cutter = row.split(':', maxsplit=1)
-        log.debug('First split to alias: %s | server: %s', cutter[0], cutter[1])
-        if '/' in cutter[1]:
-            log.info('IP found starting next cutter')
-            net = cutter[1].split('/', maxsplit=1)
-            log.debug('IP slice: %s', net)
-            cutter[1] = net[0]
-            serv.update({'ip':net[1]})
+        log.debug('First split to alias: %s | ip: %s', cutter[0], cutter[1])
         log.debug('Final cutter: %s', cutter)
         serv.update({
             'alias':cutter[0],
-            'host':cutter[1]
+            'ip':cutter[1]
             })
         log.debug('Final server object: %s', serv)
         servers.append(serv.copy())
-    log.info('Parsed servers: %s', servers)
+    log.info('Parsed servers: %s', pprint(servers))
     return servers
 
 def sendHttp(servers):
     numServ = len(servers)
     log.info('%s servers parsed from server file. Proceeding with HTTP requests...', numServ)
-    servResp = servers.copy()
-    log.debug('servResp starting contents: %s', servResp)
-    # for serv in servResp:
-    #     current = serv.key()
-    #     for key, value in serv:
-    #         if key == 'ip':
-    #             rq = requests.get('https://34.219.204.95')
-    #             log.debug('request text: %s', rq)
-    #             try:
-    #                 rq.raise_for_status()
-    #             except requests.exceptions.HTTPError as e:
-    #                 log.error('HTTP error occurred: %s', e)
-    #                 return 1
-    #             except requests.exceptions.RequestException as e:
-    #                 log.error('A request error occurred: %s', e)
-    #                 return 1
-    #             log.info('Request is successful with code: %s', rq.status_code)
-    #             return rq.status_code
+    servLocal = servers.copy()
+    servResp = {}
+    log.debug('servLocal starting contents: %s', servLocal)
+    for serv in servLocal:
+        current = serv['alias']
+        ip = str(serv['ip'])
+        rq = requests.get('http://'+ip)
+        log.debug('request text: %s', rq)
+        try:
+            rq.raise_for_status()
+        except requests.exceptions.HTTPError as e:
+            log.error('HTTP error occurred: %s', e)
+            errStatus = 'E-'+rq.status_code
+            servResp.update({current : errStatus})
+        except requests.exceptions.RequestException as e:
+            log.error('A request error occurred: %s', e)
+            servResp.update({current : errStatus})
+        log.info('Request is successful with code: %s', rq.status_code)
+        servResp.update({current : str(rq.status_code)})
+    log.debug('Server responses are: %s', pprint(servResp))
+    return servResp
 
+# Resolve requests into a response for Nagios
+def resolveStatus(responses):
+    fails = 0
+    data = str()
+    for key, value in responses:
+        if 'E-' in value:
+            fails += 1
+            log.info('current failure count: %s', fails)
+        data += ' ' + key + '=' + value
+    match fails:
+        case 0:
+            return 'OK:' + data
+        case 1:
+            return 'WARNING:' + data
+        case 2:
+            return 'FAILURE:' + data
+        case _:
+            return 'UNKNOWN:' + data
 
 # Call the first function to pull the servers.
 servers = getServers(srvPath) 
+responses = sendHttp(servers)
+output = resolveStatus(responses)
+print(output)
 log.debug(pprint(vars()))
