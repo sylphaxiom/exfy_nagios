@@ -16,14 +16,14 @@
     scripts, but that is my justification for this choice.
 """
 
-import pdb; pdb.set_trace()
+#import pdb; pdb.set_trace()
 from pprint import pprint
 import logging
 import argparse
 import requests
 
 log = logging.getLogger(__name__)
-logging.basicConfig(filename='check_http_local.log', encoding='utf-8', level=logging.DEBUG)
+logging.basicConfig(filename='check_http_local.log', encoding='utf-8', level=logging.WARNING)
 log.info("====================Logging has begun====================")
 
 # Global scoped vars and defs
@@ -45,7 +45,7 @@ args = parser.parse_args()
 log.debug('Raw arguments: %s', args)
 logLevel = args.log
 log.info('Log level set as: %s', logLevel)
-srvPath = "servers.txt" if (args.path == ('./' | '')) else  args.path + "servers.txt"
+srvPath = "servers.txt" if (args.path in ['','./',None]) else  (str(args.path) + "servers.txt")
 log.info('srvPath set as: %s', srvPath)
 servers = []
 
@@ -70,7 +70,7 @@ match logLevel:
         logging.getLogger(__name__).setLevel(logging.CRITICAL)
         log.info('Log level set to %s', '5-CRITICAL')
     case _:
-        log.info('No log level supplied. Default level is 3-WARNING')
+        log.info('No log level supplied. Default level is 1-DEBUG')
 
 # Open the server file, read contents, add to servers{} 
 def getServers(srvPath):
@@ -110,17 +110,34 @@ def sendHttp(servers):
     for serv in servLocal:
         current = serv['alias']
         ip = str(serv['ip'])
-        rq = requests.get('http://'+ip)
-        log.debug('request text: %s', rq)
         try:
+            rq = requests.get('http://'+ip)
+            log.debug('request text: %s', rq)
             rq.raise_for_status()
         except requests.exceptions.HTTPError as e:
             log.error('HTTP error occurred: %s', e)
-            errStatus = 'E-'+rq.status_code
+            errStatus = 'E-' + str(rq.status_code)
+            log.debug('errStatus is: %s', errStatus)
             servResp.update({current : errStatus})
+            continue
+        except requests.exceptions.ConnectionError as e:
+            log.error('A connection failed to establish: %s', e)
+            errStatus = 'E-FConn'
+            log.debug('errStatus is: %s', errStatus)
+            servResp.update({current : errStatus})
+            continue
+        except requests.exceptions.Timeout as e:
+            log.error('Connection was timed out: %s', e)
+            errStatus = 'E-FTime'
+            log.debug('errStatus is: %s', errStatus)
+            servResp.update({current : errStatus})
+            continue
         except requests.exceptions.RequestException as e:
             log.error('A request error occurred: %s', e)
+            errStatus = 'E-FReq'
+            log.debug('errStatus is: %s', errStatus)
             servResp.update({current : errStatus})
+            continue
         log.info('Request is successful with code: %s', rq.status_code)
         servResp.update({current : str(rq.status_code)})
     log.debug('Server responses are: %s', pprint(servResp))
@@ -130,7 +147,8 @@ def sendHttp(servers):
 def resolveStatus(responses):
     fails = 0
     data = str()
-    for key, value in responses:
+    log.debug(pprint(responses))
+    for key, value in responses.items():
         if 'E-' in value:
             fails += 1
             log.info('current failure count: %s', fails)
@@ -150,4 +168,3 @@ servers = getServers(srvPath)
 responses = sendHttp(servers)
 output = resolveStatus(responses)
 print(output)
-log.debug(pprint(vars()))
