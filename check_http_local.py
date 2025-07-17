@@ -165,6 +165,23 @@ def resolveStatus(responses):
 
 # Call the first function to pull the servers.
 servers = getServers(srvPath) 
+log.debug('servers var after getServers: %s', servers)
 responses = sendHttp(servers)
+log.debug('responses var after sendHttp: %s', responses)
 output = resolveStatus(responses)
+log.debug('output var after resolveStatus: %s', output)
 print(output)
+
+# Return code logic
+eSplit = output.split(':', 1)
+ec = eSplit[0]
+log.debug('ec value prior to exit %s', ec)
+match ec:
+    case 'OK':
+        exit(0)
+    case 'WARNING':
+        exit(1)
+    case 'FAILURE':
+        exit(2)
+    case _:
+        exit(3)
