@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """ Script is intended to read in a list of servers from a file
     and then run a simple check on those servers by sending a
     simple HTTP request to them and observing the result.
