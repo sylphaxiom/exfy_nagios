@@ -23,9 +23,11 @@ from pprint import pprint
 import logging
 import argparse
 import requests
+import os
 
 log = logging.getLogger(__name__)
-logging.basicConfig(filename='check_http_local.log', encoding='utf-8', level=logging.WARNING)
+FORMAT = '%(created)f - %(levelname)s: %(message)s'
+logging.basicConfig(filename='check_http_local.log', encoding='utf-8', level=logging.WARNING, format=FORMAT)
 log.info("====================Logging has begun====================")
 
 # Global scoped vars and defs
@@ -43,12 +45,18 @@ parser = argparse.ArgumentParser(
 )
 parser.add_argument('-path', required=False, type=str)
 parser.add_argument('-log', required=False, type=int, choices=[0,1,2,3,4,5])
-args = parser.parse_args()
+args = parser.parse_args() # Namespace(path,log)
 log.debug('Raw arguments: %s', args)
-logLevel = args.log
+logLevel = args.log # If not set, will show as None same with srvPath 
 log.info('Log level set as: %s', logLevel)
+# if the path is local, empty string, or None, simply use "servers.txt"
 srvPath = "servers.txt" if (args.path in ['','./',None]) else  (str(args.path) + "servers.txt")
 log.info('srvPath set as: %s', srvPath)
+
+# Documentation says no symlinks. This checks for symlinks and raises an error if found.
+if os.path.islink(srvPath):
+    log.critical("Symlink was used for servers.txt path. This is a no-no. Please use a real path. Path is: %s", srvPath)
+    raise ValueError("WARNING! Using symlinks is not allowed, please only use real file path")
 servers = []
 
 # If a log level is passed to the program, update level
