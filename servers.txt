@@ -1,5 +1,4 @@
 # server list for nagios plugin. One server per line in format: <alias>:<ip>
 # any lines beginning with '#' will be ignored as comments
-# adding an additional line because I need to make a change.
 web_1:172.30.0.133
 web_2:172.30.0.159

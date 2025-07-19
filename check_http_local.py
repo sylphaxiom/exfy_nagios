@@ -30,8 +30,6 @@ FORMAT = '%(created)f - %(levelname)s: %(message)s'
 logging.basicConfig(filename='check_http_local.log', encoding='utf-8', level=logging.WARNING, format=FORMAT)
 log.info("====================Logging has begun====================")
 
-# Global scoped vars and defs
-
 """
 There are 2 arguments passed to this script from the command line:
 File path (String) [optional]
