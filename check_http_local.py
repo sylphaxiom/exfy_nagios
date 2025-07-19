@@ -34,7 +34,7 @@ log.info("====================Logging has begun====================")
 
 """
 There are 2 arguments passed to this script from the command line:
-File path (String)
+File path (String) [optional]
 Log Level (0-5 or NOSET, DEBUG, INFO, WARNING, ERROR, CRITICAL) [optional]
 """
 
