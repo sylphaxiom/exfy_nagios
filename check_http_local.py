@@ -189,5 +189,5 @@ match ec:
         exit(1)
     case 'FAILURE':
         exit(2)
-    case _:
+    case _: # since UNKNOWN is basically a catchall, I used a catchall
         exit(3)
