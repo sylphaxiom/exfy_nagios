@@ -86,7 +86,6 @@ match logLevel:
 def getServers(srvPath):
     log.info('Beginning aquisition of server list...')
     rows = []
-    n = 0
     with open(srvPath, "r") as file:
         for line in file:
             line = line.strip('\n') # Sanitize the line of breaks
@@ -98,7 +97,6 @@ def getServers(srvPath):
         log.info('File operations completed, parsing servers...')
     for row in rows:
         serv = {}
-        n = n+1
         cutter = row.split(':', maxsplit=1)
         log.debug('First split to alias: %s | ip: %s', cutter[0], cutter[1])
         log.debug('Final cutter: %s', cutter)
