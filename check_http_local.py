@@ -16,6 +16,8 @@
     arguments will ALWAYS be passed to the script as intended.
     I understand this is bad practice for human interactive
     scripts, but that is my justification for this choice.
+
+    Now I'm just adding stuff for script testing purposes.
 """
 
 #import pdb; pdb.set_trace()
