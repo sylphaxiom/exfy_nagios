@@ -26,8 +26,11 @@ import requests
 import os
 
 log = logging.getLogger(__name__)
+# Adding the default log location so it doesn't log to current directory.
+handler = logging.FileHandler('/var/log/check_http_local.log')
+log.addHandler(handler)
 FORMAT = '%(created)f - %(levelname)s: %(message)s'
-logging.basicConfig(filename='check_http_local.log', encoding='utf-8', level=logging.WARNING, format=FORMAT)
+logging.basicConfig(encoding='utf-8', level=logging.WARNING, format=FORMAT)
 log.info("====================Logging has begun====================")
 
 """
