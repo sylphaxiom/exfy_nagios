@@ -50,8 +50,11 @@ args = parser.parse_args() # Namespace(path,log)
 log.debug('Raw arguments: %s', args)
 logLevel = args.log # If not set, will show as None same with srvPath 
 log.info('Log level set as: %s', logLevel)
+# if the path doesn't have a / at the end, add one
+strPath = str(args.path)
+strPath = strPath if (strPath.endswith('/')) else (strPath + '/')
 # if the path is local, empty string, or None, simply use "servers.txt"
-srvPath = "servers.txt" if (args.path in ['','./',None]) else  (str(args.path) + "servers.txt")
+srvPath = "servers.txt" if (args.path in ['','./',None]) else  (strPath + "servers.txt")
 log.info('srvPath set as: %s', srvPath)
 
 # Documentation says no symlinks. This checks for symlinks and raises an error if found.
