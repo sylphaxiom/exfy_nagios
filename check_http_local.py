@@ -19,7 +19,7 @@
 """
 
 #import pdb; pdb.set_trace()
-from pprint import pprint
+from pprint import pprint, pformat
 import logging
 import argparse
 import requests
@@ -110,7 +110,7 @@ def getServers(srvPath):
             })
         log.debug('Final server object: %s', serv)
         servers.append(serv.copy())
-    log.info('Parsed servers: %s', pprint(servers))
+    log.info('Parsed servers: %s', pformat(servers))
     return servers
 
 def sendHttp(servers):
@@ -152,14 +152,14 @@ def sendHttp(servers):
             continue
         log.info('Request is successful with code: %s', rq.status_code)
         servResp.update({current : str(rq.status_code)})
-    log.debug('Server responses are: %s', pprint(servResp))
+    log.debug('Server responses are: %s', pformat(servResp))
     return servResp
 
 # Resolve requests into a response for Nagios
 def resolveStatus(responses):
     fails = 0
     data = str()
-    log.debug(pprint(responses))
+    log.debug(pformat(responses))
     for key, value in responses.items():
         if 'E-' in value:
             fails += 1
