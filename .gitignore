@@ -2,3 +2,4 @@ check_http_local.log
 .vscode
 .venv
 servers.txt
+custom_apache.log
