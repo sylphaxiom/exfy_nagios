@@ -183,7 +183,6 @@ svcDc200 = '\'OK Responses\''
 msg200 = 'count='+c200
 stat = '0'        # this is informational, not changing state
 delim = "\';\'"
-sep = "\'|\'"
 var = subprocess.run(['hostname'],stdout=subprocess.PIPE)
 hName = str(var.stdout).split('.')[0].split('\'')[1]
 match hName:
@@ -201,13 +200,13 @@ out404 = lHost+';'+svcD404+';'+stat+';'+msg404
 outWarn = lHost+';'+svcDwarn+';'+stat+';'+msgWarn
 out200 = lHost+';'+svcDc200+';'+stat+';'+msg200
 log.debug('command output:\n\t%s\n\t%s\n\t%s', out200, out404, outWarn)
-outCMD = out200+'|'+out404+'|'+outWarn
-log.debug('Final command message: %s', outCMD)
 log.info('Logs parsed and ready for sending...')
-result = subprocess.run(['/usr/local/nagios/bin/send_nsca', '-d', delim, '-e', sep, outCMD], stdout=subprocess.PIPE)
-if result == 0:
-    log.info('Command successfully sent to Nagios! Exiting...')
-else:
-    log.critical('ERROR - An unknown error occurred and the command was not successful: %s', result)
-    log.info('The command was NOT successful, sorry about that. Check your logs.')
-log.debug('Here is the output of the command execution: %s', result.stdout)
+cmds = [out200,out404,outWarn]
+for cmd in cmds:
+    result = subprocess.run(['/usr/local/nagios/bin/send_nsca', '-d', delim, '-e', cmd], stdout=subprocess.PIPE)
+    if result == 0:
+        log.info('Command successfully sent to Nagios! Exiting...')
+    else:
+        log.critical('ERROR - An unknown error occurred and the command was not successful: %s', result)
+        log.info('The command was NOT successful, sorry about that. Check your logs.')
+    log.info('Here is the output of the command execution: %s', result.stdout)
