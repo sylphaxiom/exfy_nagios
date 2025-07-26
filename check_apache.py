@@ -131,7 +131,7 @@ with open(logPath, 'r') as lf:
             logStart = str(entry.request_time_fields["timestamp"])
             flag += 1
         # Grab vars from the entry
-        timestamp = (entry.request_time_fields["timestamp"]).timestamp()
+        timestamp = str((entry.request_time_fields["timestamp"]).timestamp())
         dateTime = str(entry.request_time_fields["timestamp"])
         status = entry.final_status
         request = entry.request_line
