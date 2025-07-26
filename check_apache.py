@@ -169,7 +169,11 @@ with open(logPath, 'r') as lf:
 log.info("Information parsed, now to send to Nagios host.")
 
 # Gather data and form the output string
-
+# we need to sanitize everything being assembled down here
+# the '+' has issues with ints
+c404 = str(c404)
+c200 = str(c200)
+cWARN = str(cWARN)
 nHost = '172.30.0.244'
 svcD404 = '404 errors'
 msg404 = 'count-'+c404+'-values-'+e404.values()
