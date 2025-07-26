@@ -152,11 +152,11 @@ with open(logPath, 'r') as lf:
                 cWARN += 1
         log.debug("entry IP is: %s", ip)
         match status:
-            case 200:
+            case '200':
                 log.debug("Throwing away OK entries")
                 c200 += 1
                 continue
-            case 404:
+            case '404':
                 log.debug("404 found, processing...")
                 e404.update({timestamp:ip+' - '+request})
                 c404 += 1
