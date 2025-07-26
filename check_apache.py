@@ -133,8 +133,8 @@ with open(logPath, 'r') as lf:
         # Grab vars from the entry
         timestamp = str((entry.request_time_fields["timestamp"]).timestamp())
         dateTime = str(entry.request_time_fields["timestamp"])
-        status = entry.final_status
-        request = entry.request_line
+        status = str(entry.final_status)
+        request = str(entry.request_line)
         # Grab IP
         match entry.remote_host:
             case '172.30.0.244':
