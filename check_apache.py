@@ -181,7 +181,7 @@ svcDwarn = 'Other Returns'
 msgWarn = 'count-'+cWARN+'-value-'+str(warnings)
 svcDc200 = 'Count of OK Responses'
 msg200 = 'count='+c200
-stat = 0        # this is informational, not changing state
+stat = '0'        # this is informational, not changing state
 delim = "\';\'"
 sep = "\'|\'"
 var = subprocess.run(['hostname'],stdout=subprocess.PIPE)
