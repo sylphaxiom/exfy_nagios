@@ -208,5 +208,5 @@ for cmd in cmds:
         log.info('Command successfully sent to Nagios! Exiting...')
     else:
         log.critical('ERROR - An unknown error occurred and the command was not successful: %s', result)
-        log.info('The command was NOT successful, sorry about that. Check your logs.')
+        log.info('The command %s was NOT successful, sorry about that. Check your logs.', result.args)
     log.info('Here is the output of the command execution: %s', result.stdout)
