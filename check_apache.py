@@ -176,10 +176,10 @@ c200 = str(c200)
 cWARN = str(cWARN)
 nHost = '172.30.0.244'
 svcD404 = '404 errors'
-msg404 = 'count-'+c404+'-values-'+str(e404.values())
-svcDwarn = 'Other Returns'
-msgWarn = 'count-'+cWARN+'-value-'+str(warnings)
-svcDc200 = 'Count of OK Responses'
+msg404 = 'count-'+c404
+svcDwarn = 'Other Responses'
+msgWarn = 'count-'+cWARN
+svcDc200 = 'OK Responses'
 msg200 = 'count='+c200
 stat = '0'        # this is informational, not changing state
 delim = "\';\'"
