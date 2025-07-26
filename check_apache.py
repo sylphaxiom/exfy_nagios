@@ -178,8 +178,8 @@ msgWarn = 'count-'+cWARN+'-value-'+str(warnings)
 svcDc200 = 'Count of OK Responses'
 msg200 = 'count='+c200
 stat = 0        # this is informational, not changing state
-delim = "\'\;\'"
-sep = "\'\|\'"
+delim = "\';\'"
+sep = "\'|\'"
 var = subprocess.run(['hostname'],stdout=subprocess.PIPE)
 hName = str(var.stdout).split('.')[0].split('\'')[1]
 match hName:
