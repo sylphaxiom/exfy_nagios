@@ -204,7 +204,7 @@ log.info('Logs parsed and ready for sending...')
 cmds = [out200,out404,outWarn]
 for cmd in cmds:
     result = subprocess.run(['/usr/local/nagios/bin/send_nsca', '-H', nHost, '-d', delim, '-c', '/usr/local/nagios/etc/send_nsca.cfg'], stdout=subprocess.PIPE, input=bytes(cmd, 'utf-8'))
-    if result == 0:
+    if result.returncode == 0:
         log.info('Command successfully sent to Nagios! Exiting...')
     else:
         log.critical('ERROR - An unknown error occurred and the command was not successful: %s', result)
