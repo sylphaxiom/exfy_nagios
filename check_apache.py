@@ -137,7 +137,7 @@ with open(logPath, 'r') as lf:
         request = str(entry.request_line)
         # Grab IP
         match entry.remote_host:
-            case '172.30.0.244':
+            case '172.30.0.224':
                 log.debug("Ignore Nagios requests")
                 c200 += 1
                 continue
@@ -174,7 +174,7 @@ log.info("Information parsed, now to send to Nagios host.")
 c404 = str(c404)
 c200 = str(c200)
 cWARN = str(cWARN)
-nHost = '172.30.0.244'
+nHost = '172.30.0.224'
 svcD404 = '\'404 errors\''
 msg404 = 'count-'+c404
 svcDwarn = '\'Other Responses\''
